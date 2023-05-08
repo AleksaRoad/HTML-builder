@@ -1,9 +1,9 @@
-const path = require("node:path");
-const fs = require("fs");
+const path = require('node:path');
+const fs = require('fs');
 
 (async () => {
   try {
-    const folderPath = path.join(__dirname, "secret-folder");
+    const folderPath = path.join(__dirname, 'secret-folder');
     const files = await fs.promises.readdir(folderPath, {
       withFileTypes: true,
     });
@@ -23,8 +23,8 @@ const fs = require("fs");
     fileStats.forEach((fileStat) => {
       if (fileStat) {
         console.log(
-          `${fileStat.fileName.split(".")[0]} - ${
-            fileStat.fileName.split(".")[1]
+          `${fileStat.fileName.split('.')[0]} - ${
+            fileStat.fileName.split('.')[1]
           } - ${fileStat.fileSize}b`,
         );
       }

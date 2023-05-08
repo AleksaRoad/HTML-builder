@@ -1,5 +1,5 @@
-const { promises: fs } = require("fs");
-const { join } = require("path");
+const { promises: fs } = require('fs');
+const { join } = require('path');
 
 const copyFiles = async (src, dest) => {
   await fs.mkdir(dest, { recursive: true });
@@ -15,11 +15,11 @@ const copyFiles = async (src, dest) => {
 
 (async () => {
   try {
-    const original = join(__dirname, "files");
-    const copy = join(__dirname, "files-copy");
+    const original = join(__dirname, 'files');
+    const copy = join(__dirname, 'files-copy');
     await fs.rm(copy, { recursive: true, force: true });
     await copyFiles(original, copy);
-    console.log("Copying files is complete");
+    console.log('Copying files is complete!');
   } catch (error) {
     console.log(error);
   }
