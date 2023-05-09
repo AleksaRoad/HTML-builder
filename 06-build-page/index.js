@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('node:path');
 const { join } = require('path');
-const { readdir, readFile, mkdir, copyFile } = require('fs/promises');
+const { readdir, readFile, mkdir, copyFile, rm } = require('fs/promises');
 
 const dist = join(__dirname, 'project-dist');
 const assets = join(dist, 'assets');
-const folderAssets = path.join(__dirname, 'assets');
+// const folderAssets = path.join(__dirname, 'assets');
 const template = join(__dirname, 'template.html');
 
 const createFolder = (path) => {
@@ -13,40 +13,63 @@ const createFolder = (path) => {
     if (error) throw error;
   });
 };
-
-const assetsNew = async () => {
-  createFolder(dist);
+createFolder(dist);
+const copyFiles = async (src, dest) => {
   createFolder(assets);
-
-  readdir(folderAssets, { withFileTypes: true }, (error, fls) => {
-    if (error) throw error;
-    fls.forEach((file) => {
-      if (file.isDirectory()) {
-        mkdir(`${assets}/${file.name}`, { recursive: true }, (error) => {
-          if (error) throw error;
-        });
-        readdir(
-          `${folderAssets}/${file.name}`,
-          { withFileTypes: true },
-          (error, fls) => {
-            if (error) throw error;
-            fls.forEach((fl) => {
-              copyFile(
-                `${folderAssets}/${file.name}/${fl.name}`,
-                `${assets}/${file.name}/${fl.name}`,
-                (error) => {
-                  if (error) throw error;
-                },
-              );
-            });
-          },
-        );
-      }
-    });
-  });
-  console.log('Assets has been created!');
+  await mkdir(dest, { recursive: true });
+  const entries = await readdir(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = join(src, entry.name);
+    const destPath = join(dest, entry.name);
+    entry.isDirectory()
+      ? await copyFiles(srcPath, destPath)
+      : await copyFile(srcPath, destPath);
+  }
 };
-assetsNew();
+
+(async () => {
+  try {
+    const original = join(__dirname, 'assets');
+    const copy = join(dist, 'assets');
+    await rm(copy, { recursive: true, force: true });
+    await copyFiles(original, copy);
+    console.log('Copying files is complete!');
+  } catch (error) {
+    console.log(error);
+  }
+})();
+
+// const assetsNew = async () => {
+
+//   readdir(folderAssets, { withFileTypes: true }, (error, fls) => {
+//     if (error) throw error;
+//     fls.forEach((file) => {
+//       if (file.isDirectory()) {
+//         mkdir(`${assets}/${file.name}`, { recursive: true }, (error) => {
+//           if (error) throw error;
+//         });
+//         readdir(
+//           `${folderAssets}/${file.name}`,
+//           { withFileTypes: true },
+//           (error, fls) => {
+//             if (error) throw error;
+//             fls.forEach((fl) => {
+//               copyFile(
+//                 `${folderAssets}/${file.name}/${fl.name}`,
+//                 `${assets}/${file.name}/${fl.name}`,
+//                 (error) => {
+//                   if (error) throw error;
+//                 },
+//               );
+//             });
+//           },
+//         );
+//       }
+//     });
+//   });
+//   console.log('Assets has been created!');
+// };
+// assetsNew();
 
 (async function createCss() {
   try {
