@@ -5,7 +5,6 @@ const { readdir, readFile, mkdir, copyFile, rm } = require('fs/promises');
 
 const dist = join(__dirname, 'project-dist');
 const assets = join(dist, 'assets');
-// const folderAssets = path.join(__dirname, 'assets');
 const template = join(__dirname, 'template.html');
 
 const createFolder = (path) => {
@@ -38,38 +37,6 @@ const copyFiles = async (src, dest) => {
     console.log(error);
   }
 })();
-
-// const assetsNew = async () => {
-
-//   readdir(folderAssets, { withFileTypes: true }, (error, fls) => {
-//     if (error) throw error;
-//     fls.forEach((file) => {
-//       if (file.isDirectory()) {
-//         mkdir(`${assets}/${file.name}`, { recursive: true }, (error) => {
-//           if (error) throw error;
-//         });
-//         readdir(
-//           `${folderAssets}/${file.name}`,
-//           { withFileTypes: true },
-//           (error, fls) => {
-//             if (error) throw error;
-//             fls.forEach((fl) => {
-//               copyFile(
-//                 `${folderAssets}/${file.name}/${fl.name}`,
-//                 `${assets}/${file.name}/${fl.name}`,
-//                 (error) => {
-//                   if (error) throw error;
-//                 },
-//               );
-//             });
-//           },
-//         );
-//       }
-//     });
-//   });
-//   console.log('Assets has been created!');
-// };
-// assetsNew();
 
 (async function createCss() {
   try {
