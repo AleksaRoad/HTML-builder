@@ -8,11 +8,7 @@ const { stdin, stdout } = process;
 (async () => {
   try {
     stdout.write('Hi, write some text and press "Enter" or "exit"!\n\n');
-    const writeStream = fs.createWriteStream(
-      path.join(__dirname, 'text.txt'),
-      'utf8',
-    );
-
+    fs.createWriteStream(path.join(__dirname, 'text.txt'), 'utf8');
     const interface = readline.createInterface({
       input: stdin,
       output: stdout,
@@ -27,7 +23,14 @@ const { stdin, stdout } = process;
       if (line.trim().toLowerCase() === 'exit') {
         exit();
       } else {
-        writeStream.write(line + '\n');
+        fs.appendFile(
+          path.join(__dirname, 'text.txt'),
+          line.toString() + '\n',
+          'utf8',
+          (err) => {
+            if (err) throw err;
+          },
+        );
       }
     });
 
@@ -36,6 +39,6 @@ const { stdin, stdout } = process;
     });
     process.on('SIGINT', exit);
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 })();
